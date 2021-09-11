@@ -20,7 +20,13 @@ def start_timer():
 def count_down(time):
     t_minute = math.floor(time/60)
     t_second = time%60
+
+    # REFORMATS time value under 10 seconds to a double digit
+    if len(str(t_second)) == 1:
+        t_second = '0' + str(t_second)
+
     canvas.itemconfig(timer_text, text=f"{t_minute}:{t_second}")
+
     if time > 0:
         window.after(1000, count_down, time-1)
 
