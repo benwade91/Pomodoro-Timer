@@ -1,3 +1,4 @@
+import tkinter.messagebox
 from tkinter import  *
 import math
 
@@ -30,6 +31,7 @@ def start_timer():
     if reps % 2 == 1:
         count_down(WORK_MIN)
         title_label.config(fg=GREEN, text='Work')
+        window.lift()
     elif reps % 8 == 0:
         count_down(LONG_BREAK_MIN)
         title_label.config(fg=RED, text='Break')
@@ -40,6 +42,7 @@ def start_timer():
         print('short break')
         current = completion.cget('text')
         completion.config(text=current + '✓')
+        window.lift()
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(time):
@@ -61,6 +64,8 @@ def count_down(time):
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
+window.attributes('-topmost', True)
+window.after_idle(window.attributes, '-topmost', False)
 window.title('Pomodoro Timer')
 window.config(padx=100, pady=50, bg=YELLOW)
 
