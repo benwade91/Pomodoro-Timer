@@ -10,25 +10,44 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
+reps = 0
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
-    count_down(70)
+    global reps
+
+    reps += 1
+    if reps % 2 == 1:
+        count_down(WORK_MIN)
+        title_label.config(fg=GREEN, text='Work')
+    elif reps % 8 == 0:
+        count_down(LONG_BREAK_MIN)
+        title_label.config(fg=RED, text='Break')
+        print('long break')
+    else:
+        count_down(SHORT_BREAK_MIN)
+        title_label.config(fg=PINK, text='Break')
+        print('short break')
+        current = completion.cget('text')
+        completion.config(text=current + '✓')
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(time):
     t_minute = math.floor(time/60)
     t_second = time%60
 
     # REFORMATS time value under 10 seconds to a double digit
-    if len(str(t_second)) == 1:
+    if t_second < 10:
         t_second = '0' + str(t_second)
 
     canvas.itemconfig(timer_text, text=f"{t_minute}:{t_second}")
 
     if time > 0:
         window.after(1000, count_down, time-1)
+    else:
+        start_timer()
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -52,7 +71,7 @@ start_button.grid(column=0, row=2)
 reset_button = Button(text='Reset')
 reset_button.grid(column=2, row=2)
 
-completion = Label(bg=YELLOW, fg=GREEN, text='✓', font=(FONT_NAME, 20, 'bold'))
+completion = Label(bg=YELLOW, fg=GREEN, text='', font=(FONT_NAME, 20, 'bold'))
 completion.grid(row=3, column=1)
 
 window.mainloop()
