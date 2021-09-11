@@ -1,5 +1,6 @@
 import tkinter.messagebox
 from tkinter import  *
+import pygame
 import math
 
 # ---------------------------- CONSTANTS ------------------------------- #
@@ -13,6 +14,10 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
 timer = None
+
+# ---------------------------- TIMER BELL ------------------------------- #
+pygame.mixer.init()
+timer_bell = pygame.mixer.Sound("bell.wav")
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 def reset_timer():
@@ -29,20 +34,21 @@ def start_timer():
 
     reps += 1
     if reps % 2 == 1:
-        count_down(WORK_MIN)
         title_label.config(fg=GREEN, text='Work')
+        count_down(WORK_MIN * 60)
         window.lift()
+        timer_bell.play()
     elif reps % 8 == 0:
-        count_down(LONG_BREAK_MIN)
         title_label.config(fg=RED, text='Break')
-        print('long break')
+        count_down(LONG_BREAK_MIN * 60)
+        timer_bell.play()
     else:
-        count_down(SHORT_BREAK_MIN)
         title_label.config(fg=PINK, text='Break')
-        print('short break')
+        count_down(SHORT_BREAK_MIN * 60)
         current = completion.cget('text')
         completion.config(text=current + '✓')
         window.lift()
+        timer_bell.play()
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(time):
